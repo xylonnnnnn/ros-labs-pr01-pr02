@@ -19,7 +19,6 @@ jobs:
         run: |
           set -eo pipefail
           source /opt/ros/jazzy/setup.bash
-          set -u
           python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
           colcon build --symlink-install --packages-select turtle_bringup
           source install/setup.bash
