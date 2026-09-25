@@ -18,3 +18,25 @@ python3 ../.course-kit/v1/tools/check_practice.py PR01 --submission .
 ```
 
 Декларация использования ИИ: [AI_USAGE.md](AI_USAGE.md). Для проверки ПР01 используйте тег `pr01-submission`: `report.commit` указывает на коммит реализации перед добавлением evidence.
+
+## ПР02 — пакет и запуск turtlesim
+
+Пакет [turtle_bringup](src/turtle_bringup/package.xml) устанавливает [sim.launch.py](src/turtle_bringup/launch/sim.launch.py) для запуска готовой ноды `turtlesim_node`. Сборка и запуск из корня репозитория:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+colcon build --symlink-install --packages-select turtle_bringup
+source install/setup.bash
+ros2 launch turtle_bringup sim.launch.py
+```
+
+Пустой пакет был собран до добавления launch-файла. Логи обеих сборок, команды и результаты опыта находятся в [evidence/pr02](evidence/pr02/). При публикации `Twist` в `/cmd_vel` подписчиков не было и поза черепашки не менялась. После публикации в `/turtle1/cmd_vel` появился подписчик, а поза изменилась. Сценарий для повторения: [capture_pr02.py](tools/capture_pr02.py).
+
+Для проверки ПР02 на теге `pr02-submission`:
+
+```bash
+python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
+python3 ../.course-kit/v1/tools/check_practice.py PR02 --submission .
+```
+
+[CI](.github/workflows/ros.yml) собирает пакет в ROS 2 Jazzy и проверяет установленный launch-файл. ПР01 следует проверять на её теге, потому что контракт course kit допускает после коммита реализации только evidence соответствующей работы.

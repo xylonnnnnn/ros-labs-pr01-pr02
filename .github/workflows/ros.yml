@@ -1,0 +1,27 @@
+name: ROS 2 practices
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ros:jazzy-ros-base
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-colcon-common-extensions ros-jazzy-turtlesim
+      - name: Check launch syntax and build
+        shell: bash
+        run: |
+          set -eo pipefail
+          source /opt/ros/jazzy/setup.bash
+          set -u
+          python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
+          colcon build --symlink-install --packages-select turtle_bringup
+          source install/setup.bash
+          ros2 pkg prefix turtle_bringup
+          test -f "$(ros2 pkg prefix turtle_bringup)/share/turtle_bringup/launch/sim.launch.py"
